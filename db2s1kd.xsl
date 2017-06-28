@@ -30,16 +30,16 @@
        supposed to have space following a text node, it will incorrectly be
        preceded by a space in the output.
        
-       This behaviour is toggled with the normalize-space param. -->
-  <xsl:param name="normalize-space" select="false()"/>
+       This behaviour is toggled with the normalize.space param. -->
+  <xsl:param name="normalize.space" select="0"/>
 
   <!-- If these characters immediately preceed an "inline" element, no space is
        added before. -->
-  <xsl:variable name="pre-punctuation">(</xsl:variable>
+  <xsl:variable name="pre.punctuation">(</xsl:variable>
 
   <!-- If these characters immediately follow an "inline" element, no space is
        added after. -->
-  <xsl:variable name="post-punctuation">.!?;:"')</xsl:variable>
+  <xsl:variable name="post.punctuation">.!?;:"')</xsl:variable>
 
   <xsl:output method="xml" indent="yes" omit-xml-declaration="yes"/>
 
@@ -209,11 +209,11 @@
 
   <xsl:template match="text()">
     <xsl:choose>
-      <xsl:when test="$normalize-space">
-        <xsl:value-of select="normalize-space()"/>
+      <xsl:when test="$normalize.space = 0">
+        <xsl:value-of select="."/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="."/>
+        <xsl:value-of select="normalize-space()"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -222,7 +222,7 @@
     <xsl:variable name="text" select="preceding-sibling::text()[1]"/>
     <xsl:variable name="len" select="string-length($text)"/>
     <xsl:variable name="last" select="substring($text, $len, 1)"/>
-    <xsl:if test="$normalize-space and $text and not(contains($pre-punctuation, $last))">
+    <xsl:if test="$normalize.space != 0 and $text and not(contains($pre.punctuation, $last))">
       <xsl:text> </xsl:text>
     </xsl:if>
   </xsl:template>
@@ -230,9 +230,17 @@
   <xsl:template name="inline-elem-post-space">
     <xsl:variable name="text" select="following-sibling::text()[1]"/>
     <xsl:variable name="first" select="substring($text, 1, 1)"/>
-    <xsl:if test="$normalize-space and not(contains($post-punctuation, $first))">
+    <xsl:if test="$normalize.space != 0 and not(contains($post.punctuation, $first))">
       <xsl:text> </xsl:text>
     </xsl:if>
+  </xsl:template>
+
+  <xsl:template match="db:emphasis">
+    <xsl:call-template name="inline-elem-pre-space"/>
+    <emphasis>
+      <xsl:apply-templates/>
+    </emphasis>
+    <xsl:call-template name="inline-elem-post-space"/>
   </xsl:template>
 
 </xsl:stylesheet>
