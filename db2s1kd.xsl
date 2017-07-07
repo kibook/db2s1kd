@@ -50,20 +50,16 @@
   </xsl:template>
 
   <xsl:template match="db:article">
-    <content>
-      <xsl:choose>
-        <xsl:when test="task">
-          <procedure>
-            <xsl:apply-templates/>
-          </procedure>
-        </xsl:when>
-        <xsl:otherwise>
-          <description>
-            <xsl:apply-templates/>
-          </description>
-        </xsl:otherwise>
-      </xsl:choose>
-    </content>
+    <xsl:choose>
+      <xsl:when test="db:task">
+        <xsl:apply-templates/>
+      </xsl:when>
+      <xsl:otherwise>
+        <description>
+          <xsl:apply-templates/>
+        </description>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template match="db:info"/>
