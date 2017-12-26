@@ -234,9 +234,64 @@
   <xsl:template match="db:emphasis">
     <xsl:call-template name="inline-elem-pre-space"/>
     <emphasis>
+      <xsl:if test="@role">
+        <xsl:attribute name="emphasisType">
+          <xsl:choose>
+            <xsl:when test="@role = 'italic'">em02</xsl:when>
+            <xsl:when test="@role = 'underline'">em03</xsl:when>
+            <xsl:otherwise>em01</xsl:otherwise>
+          </xsl:choose>
+        </xsl:attribute>
+      </xsl:if>
       <xsl:apply-templates/>
     </emphasis>
     <xsl:call-template name="inline-elem-post-space"/>
+  </xsl:template>
+
+  <xsl:template match="db:variablelist">
+    <definitionList>
+      <xsl:apply-templates/>
+    </definitionList>
+  </xsl:template>
+
+  <xsl:template match="db:varlistentry">
+    <definitionListItem>
+      <xsl:apply-templates/>
+    </definitionListItem>
+  </xsl:template>
+
+  <xsl:template match="db:term">
+    <listItemTerm>
+      <xsl:apply-templates/>
+    </listItemTerm>
+  </xsl:template>
+
+  <xsl:template match="db:varlistentry/db:listitem">
+    <listItemDefinition>
+      <xsl:apply-templates/>
+    </listItemDefinition>
+  </xsl:template>
+
+  <xsl:template match="db:inlinemediaobject/db:imageobject/db:imagedata">
+    <symbol>
+      <xsl:attribute name="infoEntityIdent">
+        <xsl:value-of select="@fileref"/>
+      </xsl:attribute>
+    </symbol>
+  </xsl:template>
+
+  <xsl:template match="db:figure">
+    <figure>
+      <xsl:apply-templates/>
+    </figure>
+  </xsl:template>
+
+  <xsl:template match="db:mediaobject/db:imageobject/db:imagedata">
+    <graphic>
+      <xsl:attribute name="infoEntityIdent">
+        <xsl:value-of select="@fileref"/>
+      </xsl:attribute>
+    </graphic>
   </xsl:template>
 
 </xsl:stylesheet>
